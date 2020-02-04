@@ -55,12 +55,13 @@ Vmin = min(meanvals);
 Vmax = max(meanvals);
 I = double(meanvals);
 In = double((I - Vmin)/(Vmax-Vmin));
-
+k = 1;
 for i = 1 : n    
     %creates array of mask immages (brightest
     if In(i) > .2
         SortArray(i) = 1;
         i_mask = xytarray(:,:,1);
+       % k = k+1;
     %array for data images
 %     elseif meanvals(i) > 70
     elseif In(i) > .1 && In(i)<= .2
@@ -79,13 +80,27 @@ maxmask = squeeze(max(i_mask, [],3));
 maximg = squeeze(max(i_image,[],3));
 maxbgr = squeeze(max(i_bgr,[],3));
 
+% lm = length(i_mask)
+% li = length(i_image)
+% lbg = length(i_bgr)
+sub1 = maxmask-maxbgr;
+figure 
+    image(sub1)
 figure
-hold on
-   imshow(maxmask);
-   imshow(maximg);
-   imshow(maxbgr);
-hold off
+    subplot(311)
+    image(maxmask)
+    subplot(312)
+    image(maximg)
+    subplot(313)
+    image(maxbgr)
+    colormap jet
+    linkaxes
+%     axis image
+    colorbar
 
+%    axis ;
+%    axis image(maximg);
+%    axis image(maxbgr);
 % display only max data values, no bgr or mask images
 figure 
 imshow(maximg);
@@ -120,7 +135,7 @@ BgrAv = mean(mean(squeeze(isbgr(:,:))));
 close(h2)
 % Vectorized version of calculating means of each frame
 % meanvals = squeeze(mean(mean(xytarray,2),1));
-figure(1)
+figure
 hist(In,0:0.01:1)
 set(gca,'xlim',[0 1])
 % mask = xytarray(:,:,flag1 == 3);
@@ -133,7 +148,7 @@ size(Bgr)
 
 CleanObj=CICRcleanSimp(Idenoised,Bgr,mask,xyt_dim,'ApparentDiffusionK',60,'CleanDiffusionK',30,'CaCleanThreshold',10);
 
-figure(2)
+figure
 % subplot(1,3,1)
 
 imagesc(CleanObj.CaRelease2D); axis image off; caxis([0,1500])
